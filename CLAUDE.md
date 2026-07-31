@@ -1,0 +1,55 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## What this is
+
+Not a software project — a content-production system that builds educational Instagram carousels, for one of **two locked brand systems** (2026-07-29): Arwa Desai's DFW real estate business (@arwa_buildsxsells_tx, **paused** — she isn't ready to resume yet) or DFW Housing Watch (@dfw_housing_watch, **active** — a page Ishant runs to test carousel engagement in the meantime). Each carousel is 9 static slides (HTML → rendered JPGs) plus a caption; the 9-slide structure, copy rules, and phase pipeline are shared across both brands — only palette, cover treatment, and contact/CTA identity differ. All production logic lives in the `carousel-edit` skill (see its "Brands" section for the full diff table); there is no app code, build system, or test suite here.
+
+## Commands
+
+Render a post's slides to JPG (only run after the user has said "go" on the script — that approval now covers rendering too, part of Phase 3):
+
+```bash
+bash .claude/skills/carousel-edit/scripts/render.sh posts/<topic-slug>
+```
+
+This headless-Chromes each `posts/<topic-slug>/slide_*.html` at 1080×1350 @3x device scale into `posts/<topic-slug>/out/slide_NN.jpg` (3240×4050, quality 92). Requires Google Chrome at `/Applications/Google Chrome.app` and network access (Google Fonts load in-page). No package manager, linter, or test runner is used in this repo.
+
+## Architecture
+
+**Everything is driven by the `carousel-edit` skill** at `.claude/skills/carousel-edit/SKILL.md` — read it in full before doing any carousel work; it is the source of truth for structure, copy rules, research, and the approval workflow, not summarized here. Supporting docs:
+
+- `.claude/skills/carousel-edit/references/design-system.md` — Arwa brand: locked palette hexes, type scale, layout specs, per-slide-type templates. Read before writing any Arwa slide HTML.
+- `.claude/skills/carousel-edit/references/palette-dfw-housing-watch.md` — DFW Housing Watch brand: same role as above, for the active brand.
+- `.claude/skills/carousel-edit/assets/` — both brands' boilerplates live here side by side: `cover-template.html`/`slide-template.html`/`carousel.css` (Arwa) and `dfw-housing-watch-badge.svg`/`slide-template-dfw-housing-watch.html`/`carousel-dfw-housing-watch.css` (DFW Housing Watch), plus the shared `neutral-aesthetic-6.js` photo filter (ported from a Lightroom preset — applies `applyNeutralAesthetic6` + `applyGrain` in-page at render time via `<canvas>`, used for Arwa's cover photo).
+
+**Per-post output** lives in `posts/<topic-slug>/`, exactly two directory levels below the project root — the slide templates reference the skill's `assets/` by relative path (`../../.claude/skills/carousel-edit/assets/`), so new post folders must stay at that same depth. A post folder contains `slide_1.html` … `slide_9.html`, `caption.txt`, `cover-photo.jpg`, `research.md` (sourced facts backing every number used in the script), and `out/` (rendered JPGs, git/build artifact — not source). If a request needs **both brands**, Phase 2's research/script stays once in `posts/<topic-slug>/` and each brand's slides/caption go in their own sibling folder instead — `posts/<topic-slug>-arwa/` and `posts/<topic-slug>-dfwhw/`, same depth rule.
+
+**`posts/topics-log.md`** is the append-only record of past topics, used to dedupe topic discovery (no repeat topic within 5 days). Update it after every carousel is built.
+
+**`Arwa photo/`** at the project root holds the rotating pool of source portraits used for Arwa-brand slide-1 covers (filtered via `neutral-aesthetic-6.js` at render time). DFW Housing Watch has no local photo pool — its cover photo is sourced live per carousel instead (see the skill's Brands table).
+
+## Workflow: 4-phase pipeline
+
+Every carousel moves through four phases, implemented as `## Phase N` sections inside `carousel-edit/SKILL.md` (2026-07-27: merged the old standalone Render phase into Review — judging engagement/legibility honestly requires the actual rendered image, not raw HTML — and renumbered Auto-post to Phase 4). The goal threaded through every phase is carousels that **trend and grow followers**, not just carousels that satisfy the brand checklist — Phase 1 ranks candidate topics for genuine surprise/"wait, what?" value and Phase 3 QAs the rendered result for the same bar.
+
+1. **Research** — check Ishant's user-curated Instagram watchlist (`posts/instagram-watchlist.md` — never auto-discovered) for educational/news carousels and the real-estate questions in their comments, plus DFW forums, local news, and market/appraisal-district sources, for what's both in-demand *and* genuinely attention-grabbing right now. Verify every claim against a primary source. Output: ranked topic candidates + `posts/<slug>/research.md` + `posts/<slug>/comment-questions.md`.
+2. **Planning** — topic and hook are picked automatically by weighted scoring systems (no user pick — see SKILL.md's "Topic scoring system" and "Hook scoring system"), then the script gets written for the locked 9-slide structure (same format, fonts, and palette as `design-system.md` — content is the only thing that changes per post). Present the chosen topic/hook with scores + fact sheet + per-slide script + disclaimer notes, and iterate until the user says **"go."** This is the single approval gate — it authorizes Phase 3 (including rendering) to run without asking again.
+3. **Review** — build the draft slides, **render them immediately** (`scripts/render.sh`), then QA the actual rendered JPGs (not the HTML) against (a) locked structural/brand rules and (b) the engagement quality bar (thumb-stop test, open loops, colored-word readability, CTA framing) — fix and re-render anything that fails, then present the full set to the user in one reviewable view for their final visual approval.
+4. **Handoff** — no automated API posting (direct Graph API and Metricool were both considered and rejected 2026-07-29, not worth the cost/complexity for one post a day). Instead: package the approved carousel into a private web page (all 9 slides + copy-ready caption), recommend a posting time from `references/posting-times.md`, and hand Ishant the link to post manually from his phone.
+
+Non-obvious rules that hold across phases:
+
+- **Never render or re-render slides without asking first** — the phase-2 "go" is that ask, and it now covers rendering too since render is part of Phase 3; don't build/render before it. **Exception: the scheduled daily automation job** (see below) — for that job only, the phase-2 topic-score threshold stands in for the live "go."
+- **Research and fact-checking happen before writing copy**, and again as a final check right before render — every number in a script must trace back to a source line in `research.md`.
+- The palette, 9-slide structure, typography, and photo filter are locked brand constants — only slide *content* changes per post.
+
+### Scheduled unattended run (2026-07-29)
+
+A macOS LaunchAgent (`~/Library/LaunchAgents/com.ishantd.carousel-daily-research.plist`, runner at `automation/run-daily-carousel.sh`, prompt at `automation/daily-carousel-prompt.txt`) fires daily at 12:00 PM local time and runs the full 4-phase pipeline **unattended, with no user present** — this is the one context where the interactive "go" gate above does not apply. It targets **DFW Housing Watch** (the active brand) — if Arwa's brand ever comes off pause, update the prompt file to match rather than assuming; the two brands are not interchangeable for this job.
+
+- **Auto-approval substitute for "go":** if Phase 2's topic score clears the existing ≥50/100 bar (SKILL.md's Topic scoring system) and a complete per-slide script is produced, that stands in for the user's live "go" — the job proceeds straight into Phase 3 (build, render immediately, subagent structural/engagement QA, one fix-and-re-render pass if needed) and Phase 4 (package the private handoff page), without pausing. If the topic score does NOT clear the bar, the job stops at Phase 2 and writes its findings to `posts/<slug>/phase2-report.md` rather than guessing or lowering the bar.
+- **Still no auto-posting.** Phase 4's private handoff page remains the final checkpoint — Ishant reviews it and posts manually from his phone. This carve-out only lets the job get as far as "ready to post," never further.
+- **`posts/topics-log.md` gets updated by this job** once it actually builds a carousel, same as any other build.
+- **Scope of the exception:** this auto-approval applies only to that specific scheduled job (identifiable by the prompt file above). Any interactive session — Ishant typing in Claude Code — still requires an explicit live "go" before Phase 3/rendering, unchanged.

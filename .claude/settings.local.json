@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Apify__call-actor",
+      "mcp__Apify__get-dataset-items"
+    ]
+  }
+}

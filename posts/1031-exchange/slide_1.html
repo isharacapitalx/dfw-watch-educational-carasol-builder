@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../.claude/skills/carousel-edit/assets/carousel.css">
+</head>
+<body>
+<div class="slide cover">
+  <canvas id="photo" class="photo-canvas" width="3240" height="4050"></canvas>
+  <div class="scrim"></div>
+  <div class="brandmark">Arwa · Builds x Sells</div>
+  <div class="content">
+    <div class="hook">The rule that turns one rental into a $2M portfolio &mdash; tax deferred.</div>
+    <span class="pill">Read this &nbsp;&rarr;</span>
+  </div>
+</div>
+<script type="module">
+import { applyNeutralAesthetic6, applyGrain } from '../../.claude/skills/carousel-edit/assets/neutral-aesthetic-6.js';
+const cv = document.getElementById('photo');
+const ctx = cv.getContext('2d');
+const img = new Image();
+img.onload = () => {
+  const scale = Math.max(cv.width / img.width, cv.height / img.height);
+  const w = img.width * scale, h = img.height * scale;
+  ctx.drawImage(img, (cv.width - w) / 2, (cv.height - h) / 2 - 120, w, h);
+  const id = ctx.getImageData(0, 0, cv.width, cv.height);
+  applyNeutralAesthetic6(id, cv.width, cv.height);
+  ctx.putImageData(id, 0, 0);
+  applyGrain(ctx, cv.width, cv.height);
+};
+img.src = './cover-photo.jpg';
+</script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+/* Carousel Edit — DFW Housing Watch brand. Do not restyle per post. Mirrors carousel.css's
+   class structure exactly (same class names) so slide markup is portable between brands —
+   only the linked stylesheet changes. Do not mix with Arwa's carousel.css. */
+:root {
+  --ivory: #EEF1F5;
+  --mist: #D7DCE3;
+  --steel: #8FA0B8;
+  --gold: #BB8F3D;
+  --gold-deep: #8C6423;
+  --navy-mid: #445066;
+  --navy: #14213D;
+  --brick: #A23B3B;
+  --brick-deep: #7A2C2C;
+  --sage: #6B7A4F;
+  --sage-deep: #4E5A38;
+  --sky-slate: #5B7A9E;
+  --sky-slate-deep: #3E5A78;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1080px; height: 1350px; overflow: hidden; }
+body {
+  font-family: 'Figtree', 'Avenir Next', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: var(--navy);
+}
+.slide {
+  position: relative;
+  width: 1080px;
+  height: 1350px;
+  padding: 150px 130px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.slide.dark { background: var(--navy); color: var(--ivory); }
+.slide.light { background: var(--ivory); color: var(--navy); }
+
+.header {
+  font-family: 'Marcellus', serif;
+  font-size: 46px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 56px;
+}
+.dark .header { color: var(--gold); }
+.light .header { color: var(--gold-deep); }
+
+.body { font-size: 58px; font-weight: 500; line-height: 1.4; }
+.body + .body { margin-top: 48px; }
+
+.dark .em-key { color: var(--gold); }
+.dark .em-pain { color: var(--brick); }
+.dark .em-pay { color: var(--sage); }
+.dark .em-num { color: var(--sky-slate); }
+.light .em-key { color: var(--gold-deep); }
+.light .em-pain { color: var(--brick-deep); }
+.light .em-pay { color: var(--sage-deep); }
+.light .em-num { color: var(--sky-slate-deep); }
+
+ul.bullets { list-style: none; margin-top: 12px; }
+ul.bullets li {
+  font-size: 58px; font-weight: 500; line-height: 1.35;
+  padding-left: 56px; position: relative; margin-top: 34px;
+}
+ul.bullets li::before {
+  content: ""; position: absolute; left: 8px; top: 0.52em;
+  width: 16px; height: 16px; border-radius: 50%; background: var(--mist);
+}
+.light ul.bullets li::before { background: var(--navy-mid); }
+
+.footer {
+  position: absolute; left: 130px; bottom: 96px;
+  font-size: 28px; font-weight: 400; letter-spacing: 0.06em;
+}
+.dark .footer { color: var(--steel); }
+.light .footer { color: var(--navy-mid); }
+
+.diagram { margin-top: 8px; }
+.diagram svg { display: block; max-height: 700px; width: 100%; }
+
+/* Cover */
+.cover { padding: 0; justify-content: flex-end; background: var(--navy); }
+.cover .bg-photo { position: absolute; inset: 0; width: 1080px; height: 1350px; object-fit: cover; }
+.cover .scrim {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(20,33,61,0.30) 0%, rgba(20,33,61,0.18) 32%, rgba(20,33,61,0.62) 60%, rgba(20,33,61,0.92) 100%);
+}
+.cover .badge {
+  position: absolute; top: 130px; left: 50%; transform: translateX(-50%);
+  width: 360px; height: 360px;
+}
+.cover .content { position: relative; padding: 0 130px 150px; }
+.cover .hook {
+  font-family: 'Marcellus', serif;
+  font-size: 84px; line-height: 1.14; text-transform: uppercase;
+  color: var(--ivory); margin-bottom: 64px;
+}
+.cover .pill {
+  display: inline-block; padding: 26px 64px;
+  border: 3px solid var(--gold); border-radius: 999px;
+  font-size: 34px; font-weight: 600; letter-spacing: 0.14em;
+  color: var(--gold); text-transform: uppercase;
+}
+
+/* CTA slide — no headshot for this brand, just the follow line */
+.cta-follow { margin-top: 72px; }
+.cta-follow .handle {
+  font-family: 'Marcellus', serif; font-size: 52px; letter-spacing: 0.04em;
+}
+.dark .cta-follow .handle { color: var(--gold); }
+.light .cta-follow .handle { color: var(--gold-deep); }

@@ -1,0 +1,37 @@
+<svg viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg">
+  <!-- DFW Housing Watch logo badge — hand-built to render identically every time. -->
+  <defs>
+    <path id="arc-bottom" d="M 91.9 254.4 A 118 118 0 0 0 308.1 254.4" />
+  </defs>
+
+  <!-- soft glow halo -->
+  <circle cx="200" cy="190" r="168" fill="#FFFFFF" opacity="0.18" />
+
+  <!-- magnifying glass handle (drawn first, sits behind the ring) -->
+  <line x1="304" y1="294" x2="366" y2="356" stroke="#14213D" stroke-width="30" stroke-linecap="round" />
+
+  <!-- outer navy ring -->
+  <circle cx="200" cy="190" r="150" fill="#FFFFFF" stroke="#14213D" stroke-width="14" />
+  <!-- inner gold ring -->
+  <circle cx="200" cy="190" r="134" fill="none" stroke="#BB8F3D" stroke-width="6" />
+
+  <!-- house icon -->
+  <g>
+    <!-- roofline -->
+    <path d="M 140 168 L 200 118 L 260 168" fill="none" stroke="#BB8F3D" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+    <!-- chimney -->
+    <rect x="228" y="122" width="16" height="30" fill="#BB8F3D" />
+    <!-- window (2x2 pane) -->
+    <rect x="188" y="150" width="24" height="24" fill="none" stroke="#BB8F3D" stroke-width="4" />
+    <line x1="200" y1="150" x2="200" y2="174" stroke="#BB8F3D" stroke-width="4" />
+    <line x1="188" y1="162" x2="212" y2="162" stroke="#BB8F3D" stroke-width="4" />
+  </g>
+
+  <!-- DFW wordmark -->
+  <text x="200" y="228" text-anchor="middle" font-family="Figtree, Arial, sans-serif" font-weight="700" font-size="56" fill="#14213D">DFW</text>
+
+  <!-- HOUSING WATCH arc text along the bottom inside the ring -->
+  <text font-family="Figtree, Arial, sans-serif" font-weight="700" font-size="22" letter-spacing="2" fill="#14213D">
+    <textPath href="#arc-bottom" startOffset="50%" text-anchor="middle">HOUSING WATCH</textPath>
+  </text>
+</svg>
