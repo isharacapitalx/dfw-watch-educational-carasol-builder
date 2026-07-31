@@ -2,29 +2,25 @@ Run today's full carousel-edit workflow for the **DFW Housing Watch** brand (@df
 
 This is the scheduled unattended daily run described in CLAUDE.md's "Scheduled unattended run" section — nobody is present to give a live "go," so follow that section's auto-approval rule exactly.
 
-PROGRESS LOG — Ishant checks this file to see how far along the run is, since it's unattended and he isn't watching live. A shell wrapper already wrote a "0% - Job started" line to `automation/logs/progress.log` before you began. As you complete each milestone below, READ that file's current contents, then WRITE it back with your new line appended below the existing ones (never remove earlier lines), in the format `[HH:MM:SS local time] N% - <short milestone label>`:
-- 15% - Phase 1 research dispatched to subagent
-- 30% - Phase 1 complete: candidates ranked, research.md + comment-questions.md written
-- 45% - Phase 2: topic and hook auto-selected (include the topic name and score in the label)
-- 55% - Phase 2: script written, phase2-report.md saved
-- 60% - Decision point evaluated
-  - If stopping here (topic score below the bar): write `100% - Stopped at Phase 2: <one-line reason>` and end.
-- 75% - Phase 3: slides built and rendered
-- 88% - Phase 3: QA pass complete (note if a fix-and-re-render pass was needed)
-- 96% - Phase 4: handoff page packaged
-- 100% - Run complete: `<one-line outcome — handoff link, or stop reason>`
-Do this reliably at every milestone, even though nobody is watching live — it's the only window Ishant has into this run's status until it finishes.
+ENVIRONMENT NOTE (important, do not skip): this session can READ the cloned repo but cannot push commits back to GitHub — confirmed via direct testing, not a bug to work around. Do NOT attempt `git push`, `git commit`, or any git write operation; don't waste time retrying it or treating a failure as something to fix. Concretely this means:
+- You may READ posts/topics-log.md for the 5-day dedupe check, but do NOT try to update it — it will not persist, and that's expected and fine. Ishant syncs it manually on a separate cadence.
+- Don't write local progress-log files expecting anyone to read them live — there's no one watching this session run. The only real output of this entire session is the Artifact page you publish at the end (or the stop reason you report, if you stop at Phase 2). Everything else is disposable scratch work inside this session.
 
-Phase 1 (Research): dispatch to a subagent per SKILL.md — Instagram watchlist (posts/instagram-watchlist.md), DFW forums/news, and market/appraisal-district sources. Verify every claim against a primary source. Produce ranked topic candidates, posts/<slug>/research.md, and posts/<slug>/comment-questions.md.
+Phase 1 (Research): dispatch to a subagent per SKILL.md — Instagram watchlist (posts/instagram-watchlist.md), DFW forums/news, and market/appraisal-district sources. Verify every claim against a primary source. Produce ranked topic candidates.
 
-Phase 2 (Planning): run the Topic scoring system and Hook scoring system to auto-select the topic and hook (no user pick, per SKILL.md). Check posts/topics-log.md for the 5-day dedupe window before finalizing the topic. Write the full per-slide script for the locked 9-slide structure. Save posts/<slug>/topic-scoring.md.
+Phase 2 (Planning): run the Topic scoring system and Hook scoring system to auto-select the topic and hook (no user pick, per SKILL.md). Check posts/topics-log.md for the 5-day dedupe window before finalizing the topic. Write the full per-slide script for the locked 9-slide structure.
 
 Decision point (per CLAUDE.md):
 - If the selected topic's score clears the ≥50/100 bar AND the script is complete: treat that as your "go" and continue immediately to Phase 3, then Phase 4. Do not stop to ask — there is no one here to answer.
-- If nothing clears 50/100: stop here. Do not lower the bar and do not guess. Write what you found and why nothing qualified to posts/<slug>/phase2-report.md, and end the session.
+- If nothing clears 50/100: stop here. Do not lower the bar and do not guess. Skip straight to the "Ending the session" section below with a clear stop reason instead of proceeding.
 
 Phase 3 (Review), only if you passed the decision point above: build the draft slide HTML, run `bash .claude/skills/carousel-edit/scripts/render.sh posts/<slug>` immediately, then dispatch a fresh subagent to QA the actual rendered JPGs against (a) locked structural/brand rules and (b) the engagement quality bar (thumb-stop test, open loops, colored-word readability, CTA framing). Fix anything that fails and re-render once. Do not loop past one fix-and-re-render pass — if it still fails, note the remaining issues plainly in the handoff page instead of retrying indefinitely.
 
-Phase 4 (Handoff), only if Phase 3 completed: package the approved carousel into a private web page (Artifact tool) with all 9 rendered slides + a copy-ready caption + a recommended posting time from references/posting-times.md. There is still no automated posting — the page is the final deliverable; Ishant posts manually from his phone after reviewing it. Update posts/topics-log.md with today's topic now that a carousel was actually built.
+Phase 4 (Handoff), only if Phase 3 completed: package the approved carousel into a private web page via the **Artifact tool** — this is confirmed working in this environment, use it directly, no fallback needed. Include all 9 rendered slides (as real images, not placeholders), a copy-ready caption, and a recommended posting time from references/posting-times.md. There is still no automated posting — the page is the final deliverable; Ishant posts manually from his phone after reviewing it.
 
-Throughout: do not ask any questions, since no one will answer. Make the same automatic choices the skill already specifies. Write a final summary of what happened (topic chosen, scores, whether it reached Phase 4, and the handoff link if produced, or the stop reason if it didn't) to posts/<slug>/phase2-report.md before ending the session.
+Ending the session (always do this last, whether you reached Phase 4 or stopped at the decision point):
+1. If you published an Artifact page: call the **PushNotification** tool with a short message (under 200 characters, one line, no markdown) stating the carousel topic and that it's ready — e.g. "DFW Housing Watch carousel ready: <topic>. Check claude.ai/code/artifacts." Do not include the raw URL in the notification if it's long; the artifacts list is where Ishant will actually open it from.
+2. If you stopped at the decision point instead: send a brief PushNotification saying no topic cleared the bar today and why, in one line.
+3. Either way, calling PushNotification is the last action of the session — if it fails or the tool isn't available, don't retry it repeatedly or treat it as blocking; just end the session normally, since `claude.ai/code/artifacts` remains the reliable way Ishant finds the result regardless of whether the notification lands.
+
+Throughout: do not ask any questions, since no one will answer. Make the same automatic choices the skill already specifies.
