@@ -28,7 +28,7 @@ This headless-Chromes each `posts/<topic-slug>/slide_*.html` at 1080×1350 @3x d
 
 **`posts/topics-log.md`** is the append-only record of past topics, used to dedupe topic discovery (no repeat topic within 5 days). Update it after every carousel is built.
 
-**`Arwa photo/`** at the project root holds the rotating pool of source portraits used for Arwa-brand slide-1 covers (filtered via `neutral-aesthetic-6.js` at render time). DFW Housing Watch has no local photo pool — its cover photo is sourced live per carousel instead (see the skill's Brands table).
+**`Arwa photo/`** at the project root holds the rotating pool of source portraits used for Arwa-brand slide-1 covers (filtered via `neutral-aesthetic-6.js` at render time). **`DFW Housing Watch photo/`** holds the equivalent rotating pool for that brand's covers (2026-08-02: switched from live-per-topic Wikimedia sourcing — the cloud automation environment can't fetch external images at render time, confirmed via direct testing — see `references/palette-dfw-housing-watch.md`'s Cover strategy section and that folder's `CREDITS.md`).
 
 ## Workflow: 4-phase pipeline
 

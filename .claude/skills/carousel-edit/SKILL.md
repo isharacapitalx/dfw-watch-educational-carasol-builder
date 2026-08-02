@@ -16,7 +16,7 @@ Two brands exist. **Ask which one (or both) if the user doesn't say** — don't 
 | Status | Ishant's original plan; Arwa isn't ready to do this right now, so this brand is on hold — fully built and ready to resume whenever he says so | The current active brand; a page he's running to test carousel engagement before Arwa (if ever) comes back in |
 | Reference doc | `references/design-system.md` | `references/palette-dfw-housing-watch.md` |
 | Palette | plaster/oak/espresso/clay/olive/slate (organic-modern) | ivory/navy/gold (civic/corporate) |
-| Cover (slide 1) | photo of Arwa from `Arwa photo/`, filtered via `neutral-aesthetic-6.js` | `assets/dfw-housing-watch-badge.svg` composited over a topic-relevant background photo sourced live per carousel (Wikimedia Commons preferred — check the license; avoid unlicensed image-search results on a commercial account) |
+| Cover (slide 1) | photo of Arwa from `Arwa photo/`, filtered via `neutral-aesthetic-6.js` | `assets/dfw-housing-watch-badge.svg` composited over a background photo rotated from `DFW Housing Watch photo/` (local pool, not live-sourced — see palette doc's 2026-08-02 note on why) |
 | Slide 8 job | "why Arwa specifically" | "why follow this page" |
 | Slide 9 CTA | `DM "<keyword>"` + Arwa's name/handle/email | "Follow for more" + `@dfw_housing_watch` only — no personal name, no email, no DM keyword |
 | Footer handle | `@arwa_buildsxsells_tx` | `@dfw_housing_watch` |
