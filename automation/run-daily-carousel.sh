@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-DIR="/Users/ishantd/Documents/Claude/REALTOR/Carasol builder"
+DIR="/Users/ishantd/Documents/Claude/REALTOR/DFW Watch Educational Carasol Builder"
 cd "$DIR"
 
 PROMPT="$(cat "$DIR/automation/daily-carousel-prompt.txt")"
